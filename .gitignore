@@ -1,0 +1,8 @@
+img_corrected/
+img_raw/
+checker/
+__pycache__/
+camera_cal.p
+cal_data.p
+drawchecker.py
+Scan.bmp
