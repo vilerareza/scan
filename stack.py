@@ -9,14 +9,14 @@ imgDir = "img_corrected"
 def shift_image(img, shift):
     if shift < 0:
         # Shift right
-        pad = np.zeros((img.shape[0],(abs(shift)),img.shape[2]))
+        pad = np.zeros((img.shape[0],int(abs(shift)),img.shape[2]))
         # Ignore pixel from right
         img = img[::, :-abs(shift), ::]
         # Add pixel to left
         img = np.hstack((pad, img))
     else:
         # Shift left
-        pad = np.zeros((img.shape[0],(abs(shift)),img.shape[2]))
+        pad = np.zeros((img.shape[0],int(abs(shift)),img.shape[2]))
         # Ignore pixel from left
         img = img[::, abs(shift):, ::]
         # Add pixel to right
@@ -40,7 +40,7 @@ def align_and_stack(imgDir):
                 imgs.append(img)
             for i in range(len(imgs)):
                 if i > 0:
-                    shift_image(imgs[i], shifts[i-1])
+                    imgs[i]=shift_image(imgs[i], shifts[i-1]).astype('uint8')
 
             # Output
         #     outimg = stack_image(imgs)
