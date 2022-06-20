@@ -9,18 +9,18 @@ imgDir = "img_corrected"
 def shift_image(img, shift):
     if shift < 0:
         # Shift right
-        pad = np.zeros((img.shape[0],int(abs(shift)),img.shape[2]))
+        pad = np.zeros((img.shape[0],int(abs(shift)),img.shape[2])).astype('uint8')
         # Ignore pixel from right
         img = img[::, :-abs(shift), ::]
         # Add pixel to left
-        img = np.hstack((pad, img))
+        img = np.hstack((pad, img)).astype('uint8')
     else:
         # Shift left
-        pad = np.zeros((img.shape[0],int(abs(shift)),img.shape[2]))
+        pad = np.zeros((img.shape[0],int(abs(shift)),img.shape[2])).astype('uint8')
         # Ignore pixel from left
         img = img[::, abs(shift):, ::]
         # Add pixel to right
-        img = np.hstack((img, pad))
+        img = np.hstack((img, pad)).astype('uint8')
     
     return img
 
