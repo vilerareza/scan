@@ -80,7 +80,7 @@ def align_and_stack(imgDir):
                     imgs[i]=shift_image(imgs[i], shifts[i-1]).astype('uint8')
             # Output
             outimg = stack_image(imgs)
-            cv.imwrite('Scan.png', outimg)
+            cv.imwrite('Scan.bmp', outimg)
             return True
         else:
             return False
