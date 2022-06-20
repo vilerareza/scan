@@ -1,4 +1,4 @@
-#import argparse
+
 import os
 import cv2 as cv
 import numpy as np
@@ -81,11 +81,10 @@ def align_and_stack(imgDir):
                     imgs [i] = shift_image(imgs[i], shifts[i-1])
 
             # Output
-            outimg = stack_image(imgs)
-            cv.imwrite('Scan.png', outimg)
+            #outimg = stack_image(imgs)
+            #cv.imwrite('Scan.png', outimg)
             return True
         else:
-            print('No images found')
             return False
 
     except Exception as e:
