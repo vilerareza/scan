@@ -53,8 +53,8 @@ def align_and_stack(imgDir):
             tray_edges = []
             for i in range(len(imageFiles)):
                 filePath = os.path.join(imgDir, f'{i}.png')
-                img = cv.imread(filePath)
-                imgs.append(img)
+                img = cv.imread(filePath).astype('uint8')
+                imgs.append(img.astype('uint8'))
             # Find the image edges and threshold it to 0 or 255
                 if (i % 2):
                     # If even image the top edge
@@ -80,7 +80,7 @@ def align_and_stack(imgDir):
                     imgs[i]=shift_image(imgs[i], shifts[i-1]).astype('uint8')
             # Output
             outimg = stack_image(imgs)
-            cv.imwrite('Scan.bmp', outimg)
+            cv.imwrite('Scan.png', outimg)
             return True
         else:
             return False
