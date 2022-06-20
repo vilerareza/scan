@@ -74,10 +74,10 @@ def align_and_stack(imgDir):
                 for i in range(len(shifts)-1):
                     shifts[i+1] = shifts[i+1]+shifts[i]
             
-            # # Shift the images (except image 0)
-            # for i in range(len(imgs)):
-            #     if i > 0:
-            #         imgs [i] = shift_image(imgs[i], shifts[i-1])
+            # Shift the images (except image 0)
+            for i in range(len(imgs)):
+                if i > 0:
+                    imgs [i] = shift_image(imgs[i], shifts[i-1])
 
 #             # Output
 #             #outimg = stack_image(imgs)
