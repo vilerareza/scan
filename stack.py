@@ -38,9 +38,9 @@ def align_and_stack(imgDir):
                 filePath = os.path.join(imgDir, f'{i}.png')
                 img = cv.imread(filePath)
                 imgs.append(img)
-            for i in range(len(imgs)):
-                if i > 0:
-                    imgs[i]=(shift_image(imgs[i], shifts[i-1]))
+            # for i in range(len(imgs)):
+            #     if i > 0:
+            #         imgs[i]=(shift_image(imgs[i], shifts[i-1]))
 
             # Output
             outimg = stack_image(imgs)
