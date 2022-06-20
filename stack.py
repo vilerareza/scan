@@ -40,7 +40,7 @@ def align_and_stack(imgDir):
                 imgs.append(img)
             for i in range(len(imgs)):
                 if i > 0:
-                    shift_image(imgs[i], shifts[i-1]))
+                    shift_image(imgs[i], shifts[i-1])
 
             # Output
         #     outimg = stack_image(imgs)
