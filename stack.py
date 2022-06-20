@@ -65,14 +65,14 @@ def align_and_stack(imgDir):
                 tray_edge = find_tray_edge(edge)
                 tray_edges.append(tray_edge)
             
-            # if len(tray_edges) > 1:
-            #     shifts = []
-            #     for i in range(len(tray_edges)-1):
-            #         shift = tray_edges[i+1]-tray_edges[i]
-            #         shifts.append(shift)
-            #     #Accumulate the shift
-            #     for i in range(len(shifts)-1):
-            #         shifts[i+1] = shifts[i+1]+shifts[i]
+            if len(tray_edges) > 1:
+                shifts = []
+                for i in range(len(tray_edges)-1):
+                    shift = tray_edges[i+1]-tray_edges[i]
+                    shifts.append(shift)
+                #Accumulate the shift
+                for i in range(len(shifts)-1):
+                    shifts[i+1] = shifts[i+1]+shifts[i]
             
             # # Shift the images (except image 0)
             # for i in range(len(imgs)):
