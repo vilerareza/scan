@@ -2,6 +2,7 @@ import os
 import cv2 as cv
 import numpy as np
 import time
+import pickle
 
 imgDir = "img_corrected"
 
@@ -75,9 +76,10 @@ def align_and_stack(imgDir):
                     shifts[i+1] = shifts[i+1]+shifts[i]
             
             # Shift the images (except image 0)
+            newImgs = []
             for i in range(len(imgs)):
                 if i > 0:
-                    imgs [i] = shift_image(imgs[i], shifts[i-1])
+                    newImgs = newImgs.append(shift_image(imgs[i], shifts[i-1]))
 
 #             # Output
 #             #outimg = stack_image(imgs)
