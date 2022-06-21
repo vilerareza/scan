@@ -112,7 +112,7 @@ def start_scanning():
 
 # Execute scanning and image processing
 if start_scanning():
-    if stack.post_process():
+    if not (stack.post_process()):
         print ('Failure during post_processing..')
 else:
     print ('Failure during scanning.')
