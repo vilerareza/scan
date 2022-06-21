@@ -121,7 +121,7 @@ class StepperMotor(object):
                 self.set_mode(mode)
                 gpio.output(self.DIR, self.DIR_CW)
                 for x in range(steps):
-                    if gpio.input(self.END_POS):    # Check the condition of end position:    # Check the condition of end position switch later
+                    if True:    # Check the condition of end position:    # Check the condition of end position switch later
                         gpio.output(self.STEP, gpio.HIGH)
                         sleep(delay)
                         gpio.output(self.STEP, gpio.LOW)
@@ -139,7 +139,7 @@ class StepperMotor(object):
                 gpio.output(self.DIR, self.DIR_CCW)
                 #for x in range(SPR*DEC_RATIO*steps*mode):
                 for x in range(steps):
-                    if True:    # Check the condition of end position switch later
+                    if gpio.input(self.END_POS):    # Check the condition of end position switch later
                         gpio.output(self.STEP, gpio.HIGH)
                         sleep(delay)
                         gpio.output(self.STEP, gpio.LOW)

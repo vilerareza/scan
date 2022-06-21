@@ -95,15 +95,18 @@ def start_scanning():
             print (f'Scan complete. Timelapse: {str(t2-t1)}s')
             # Back to home position
             stepperMotor.home()
+            stepperMotor.stop()
+            return True
 
     except Exception as e:
         print (e)
         led_off(LED)
-
-    finally:
         stepperMotor.stop()
-
-start_scanning()
-stack.post_process()
+        return False
+        
+if start_scanning():
+    stack.post_process()
+else:
+    print ('Failure during scanning.')
 
 
