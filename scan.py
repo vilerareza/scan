@@ -109,10 +109,16 @@ def start_scanning():
         led_off(LED)
         stepperMotor.stop()
         return False
-        
+
+# Execute scanning and image processing
 if start_scanning():
-    stack.post_process()
+    if stack.post_process():
+        print ('Failure during post_processing..')
 else:
     print ('Failure during scanning.')
+
+# Clearing the raw and result directory
+clear_dir(rawDir)
+clear_dir(outDir)
 
 

@@ -80,20 +80,22 @@ def align_and_stack(imgDir):
             outimg = stack_image(imgs)
             return outimg
         else:
-            return None
+            return []
 
     except Exception as e:
         print (e)
-        return None
+        return []
 
 def post_process ():
     t1 = time.time()
     outFileName = f'Scan_{time.strftime("%Y-%m-%d_%H-%m-%S")}.png'
     outImg = align_and_stack(imgDir)
-    if outImg.any():
+    if any(outImg):
         cv.imwrite(outFileName, outImg)
         t2 = time.time()
         print (f'Post-processing done. Timelapse: {t2-t1}s')
+        return True
     else:
         t2 = time.time()
         print (f'Post-processing failed...')
+        return False
