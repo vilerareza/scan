@@ -1,5 +1,6 @@
 from steppermotor import StepperMotor
 from undistorter import Undistorter
+import stack
 import subprocess
 import cv2 as cv
 import argparse
@@ -49,11 +50,11 @@ def led_off(pin):
 
 def capture(rawDir, rawFile, outFile, condition):
     # Capture
-    subprocess.run(['libcamera-still', '--denoise', 'off', '--shutter', '70000', '--gain', '0', '--awb', 'cloudy', '--immediate', '--rawfull', '-e', 'png', '-o', f'{rawDir}/{rawFile}'])
+    subprocess.run(['libcamera-still', '--denoise', 'off', '--shutter', '70000', '--gain', '0', '--awb', 'cloudy', '--immediate', '--rawfull', '-e', 'bmp', '-o', f'{rawDir}/{rawFile}'])
     try:
         img = cv.imread(f'{rawDir}/{rawFile}')
         img_cor = unDistorter.undistort(img)
-        cv.imwrite(f'{outDir}/{outFile}.png', img_cor)
+        cv.imwrite(f'{outDir}/{outFile}.bmp', img_cor)
         with condition:
             condition.notify_all()
     except:
@@ -63,44 +64,46 @@ def start_capture_thread(rawDir, rawFile, outFile, condition):
     t_capture = Thread(target = capture, args = (rawDir, rawFile, outFile, condition))
     t_capture.start()
 
-try:
-    t1 = time.time()
-    # Move from home position
-    if stepperMotor.home():
-        # Illumination on
-        led_init(LED)
-        led_on(LED)
-        # Start pattern
-        for i in range(len(pattern)):
-            stepperMotor.move(dir = pattern[i]['dir'], steps = pattern[i]['steps'], mode = pattern[i]['mode'], delay=pattern[i]['delay'])
-            # Stop for capturing
-            time.sleep(t_hold_stbl)
-            print (f'Movement stop, capturing...{i}')
-            if i > 0:
-                # No need to wait for first move
-                with condition:
-                    # wait until the last capture is completed
-                    condition.wait(timeout = capture_timeout)
-            start_capture_thread(rawDir, 'temp.png', str(i) , condition)
-            time.sleep(t_hold_shot)
-            print (f'Capture complete...{i}')
-        # Illumination off
-        with condition:
-            # wait until the last capture is completed
-            condition.wait(timeout = capture_timeout)
+def start_scanning():
+    try:
+        t1 = time.time()
+        # Move from home position
+        if stepperMotor.home():
+            # Illumination on
+            led_init(LED)
+            led_on(LED)
+            # Start pattern
+            for i in range(len(pattern)):
+                stepperMotor.move(dir = pattern[i]['dir'], steps = pattern[i]['steps'], mode = pattern[i]['mode'], delay=pattern[i]['delay'])
+                # Stop for capturing
+                time.sleep(t_hold_stbl)
+                print (f'Movement stop, capturing...{i}')
+                if i > 0:
+                    # No need to wait for first move
+                    with condition:
+                        # wait until the last capture is completed
+                        condition.wait(timeout = capture_timeout)
+                start_capture_thread(rawDir, 'temp.bmp', str(i) , condition)
+                time.sleep(t_hold_shot)
+                print (f'Capture complete...{i}')
+            # Illumination off
+            with condition:
+                # wait until the last capture is completed
+                condition.wait(timeout = capture_timeout)
+            led_off(LED)
+            t2 = time.time()
+            print (f'Scan complete. Timelapse: {str(t2-t1)}s')
+            # Back to home position
+            stepperMotor.home()
+
+    except Exception as e:
+        print (e)
         led_off(LED)
-        t2 = time.time()
-        print (f'Scan complete. Timelapse: {str(t2-t1)}s')
-        # Back to home position
-        stepperMotor.home()
 
-except Exception as e:
-    print (e)
-    led_off(LED)
-    # Back to home position
-    # stepperMotor.home()
+    finally:
+        stepperMotor.stop()
 
-finally:
-    stepperMotor.stop()
+start_scanning()
+stack.post_process()
 
 

@@ -5,8 +5,8 @@ class StepperMotor(object):
     # RasPi GPIOs - adjust when needed
     STEP = 18
     DIR = 15
-    DIR_CW = 1
-    DIR_CCW = 0
+    DIR_CW = 0
+    DIR_CCW = 1
     MODE1 = 21
     MODE2 = 20
     STBY = 23
@@ -99,7 +99,7 @@ class StepperMotor(object):
         try:
             print (f'Move to home position...')
             self.set_mode(mode)
-            gpio.output(self.DIR, self.DIR_CW)
+            gpio.output(self.DIR, self.DIR_CCW)
             while gpio.input(self.END_POS):    # Check the condition of end position
                 gpio.output(self.STEP, gpio.HIGH)
                 sleep(delay)
