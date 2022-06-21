@@ -74,7 +74,7 @@ def start_scanning():
     try:
         t1 = time.time()
         # Clearing the result directory
-        clear_output_dir()
+        clear_output_dir(outDir)
         # Move from home position
         if stepperMotor.home():
             # Illumination on
