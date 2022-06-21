@@ -48,11 +48,8 @@ def led_on(pin):
 def led_off(pin):
     gpio.output(pin, gpio.LOW)
 
-def clear_output_dir(outDir):
-    try:
-        subprocess.run(['rm', '-f', f'{outDir}/*'])
-    except Exception as e:
-        print (f'Clearing image output directory failed: {e}')
+def clear_dir(dirName):
+    subprocess.run(['rm', '-f', f'{dirName}/*'])
 
 def capture(rawDir, rawFile, outFile, condition):
     # Capture
@@ -73,8 +70,9 @@ def start_capture_thread(rawDir, rawFile, outFile, condition):
 def start_scanning():
     try:
         t1 = time.time()
-        # Clearing the result directory
-        clear_output_dir(outDir)
+        # Clearing the raw and result directory
+        clear_dir(rawDir)
+        clear_dir(outDir)
         # Move from home position
         if stepperMotor.home():
             # Illumination on
