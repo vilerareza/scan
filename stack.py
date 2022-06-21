@@ -50,30 +50,29 @@ def align_and_stack(imgDir):
         imageFiles = os.listdir(imgDir)
         if len(imageFiles) > 0:
             imgs = []
-            tray_edges = []
+            tray_edges_t = []
+            tray_edges_b = []
             for i in range(len(imageFiles)):
                 filePath = os.path.join(imgDir, f'{i}.png')
                 img = cv.imread(filePath).astype('uint8')
                 imgs.append(img.astype('uint8'))
-            # Find the image edges and threshold it to 0 or 255
-                if (i % 2):
-                    # If even image the top edge
-                    edge = thresholding(cv.cvtColor(img, cv.COLOR_BGR2GRAY)[0,::], threshold = 50)
-                else:
-                    # Edd image take the bottom edge
-                    edge = thresholding(cv.cvtColor(img, cv.COLOR_BGR2GRAY)[-1,::], threshold = 50)
-                # Find tray edge
-                tray_edge = find_tray_edge(edge)
-                tray_edges.append(tray_edge)
+                # Find the image edges and threshold it to 0 or 255
+                edge_t = thresholding(cv.cvtColor(img, cv.COLOR_BGR2GRAY)[0,::])
+                edge_b = thresholding(cv.cvtColor(img, cv.COLOR_BGR2GRAY)[-1,::])
+                tray_edge_t = find_tray_edge(edge_t)
+                tray_edge_b = find_tray_edge(edge_b)
+                tray_edges_t.append(tray_edge_t)
+                tray_edges_b.append(tray_edge_b)
             
-            if len(tray_edges) > 1:
-                shifts = []
-                for i in range(len(tray_edges)-1):
-                    shift = tray_edges[i+1]-tray_edges[i]
-                    shifts.append(shift)
-                #Accumulate the shift
-                for i in range(len(shifts)-1):
-                    shifts[i+1] = shifts[i+1]+shifts[i]
+            shifts = []
+            for i in range(len(imgs)-1):
+                shift = tray_edges_b[i+1]-tray_edges_t[i]
+                shifts.append(shift)
+
+            #Accumulate the shift
+            for i in range(len(shifts)-1):
+                shifts[i+1] = shifts[i+1]+shifts[i]
+
             # Shift the images (except image 0)
             for i in range(len(imgs)):
                 if i > 0:
