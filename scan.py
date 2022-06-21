@@ -56,11 +56,11 @@ def clear_output_dir(outDir):
 
 def capture(rawDir, rawFile, outFile, condition):
     # Capture
-    subprocess.run(['libcamera-still', '--denoise', 'off', '--shutter', '70000', '--gain', '0', '--awb', 'cloudy', '--immediate', '--rawfull', '-e', 'bmp', '-o', f'{rawDir}/{rawFile}'])
+    subprocess.run(['libcamera-still', '--denoise', 'off', '--shutter', '70000', '--gain', '0', '--awb', 'cloudy', '--immediate', '--rawfull', '-e', 'png', '-o', f'{rawDir}/{rawFile}'])
     try:
         img = cv.imread(f'{rawDir}/{rawFile}')
         img_cor = unDistorter.undistort(img)
-        cv.imwrite(f'{outDir}/{outFile}.bmp', img_cor)
+        cv.imwrite(f'{outDir}/{outFile}.png', img_cor)
         with condition:
             condition.notify_all()
     except:
@@ -91,7 +91,7 @@ def start_scanning():
                     with condition:
                         # wait until the last capture is completed
                         condition.wait(timeout = capture_timeout)
-                start_capture_thread(rawDir, 'temp.bmp', str(i) , condition)
+                start_capture_thread(rawDir, 'temp.png', str(i) , condition)
                 time.sleep(t_hold_shot)
                 print (f'Capture complete...{i}')
             # Illumination off

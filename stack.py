@@ -52,7 +52,7 @@ def align_and_stack(imgDir):
             tray_edges_t = []
             tray_edges_b = []
             for i in range(len(imageFiles)):
-                filePath = os.path.join(imgDir, f'{i}.bmp')
+                filePath = os.path.join(imgDir, f'{i}.png')
                 img = cv.imread(filePath).astype('uint8')
                 imgs.append(img.astype('uint8'))
                 # Find the image edges and threshold it to 0 or 255
@@ -88,7 +88,7 @@ def align_and_stack(imgDir):
 
 def post_process ():
     t1 = time.time()
-    outFileName = f'Scan_{time.strftime("%Y-%m-%d_%H-%m-%S")}.bmp'
+    outFileName = f'Scan_{time.strftime("%Y-%m-%d_%H-%m-%S")}.png'
     outImg = align_and_stack(imgDir)
     if outImg.any():
         cv.imwrite(outFileName, outImg)
