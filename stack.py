@@ -90,7 +90,7 @@ def post_process ():
     t1 = time.time()
     outFileName = f'Scan_{time.strftime("%Y-%m-%d_%H-%m-%S")}.png'
     outImg = align_and_stack(imgDir)
-    if any(outImg):
+    if len(outImg) > 0:
         cv.imwrite(outFileName, outImg)
         t2 = time.time()
         print (f'Post-processing done. Timelapse: {t2-t1}s')
