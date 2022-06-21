@@ -48,6 +48,12 @@ def led_on(pin):
 def led_off(pin):
     gpio.output(pin, gpio.LOW)
 
+def clear_output_dir(outDir):
+    try:
+        subprocess.run(['rm', '-f', f'{outDir}/*'])
+    except Exception as e:
+        print (f'Clearing image output directory failed: {e}')
+
 def capture(rawDir, rawFile, outFile, condition):
     # Capture
     subprocess.run(['libcamera-still', '--denoise', 'off', '--shutter', '70000', '--gain', '0', '--awb', 'cloudy', '--immediate', '--rawfull', '-e', 'bmp', '-o', f'{rawDir}/{rawFile}'])
@@ -67,6 +73,8 @@ def start_capture_thread(rawDir, rawFile, outFile, condition):
 def start_scanning():
     try:
         t1 = time.time()
+        # Clearing the result directory
+
         # Move from home position
         if stepperMotor.home():
             # Illumination on
