@@ -49,7 +49,7 @@ class Stacker(object):
         # Stack all the images in the array
         return np.vstack([img for img in imgs][::-1])
 
-    def align_and_stack(self):
+    def align_and_stack(self, imgDir):
         try:
             if self.nImages > 0:
                 imgs = []
@@ -60,7 +60,7 @@ class Stacker(object):
                         # wait until the last capture is completed
                         print ('Waiting for scan image')
                         self.condition.wait()
-                    filePath = os.path.join(self.imgDir, f'{i}.png')
+                    filePath = os.path.join(imgDir, f'{i}.png')
                     img = cv.imread(filePath).astype('uint8')
                     imgs.append(img.astype('uint8'))
                     # Find the image edges and threshold it to 0 or 255
