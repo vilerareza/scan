@@ -1,6 +1,7 @@
 from steppermotor import StepperMotor
 from undistorter import Undistorter
-import stack
+# import stack
+from stack import Stacker
 import subprocess
 import cv2 as cv
 import argparse
@@ -25,15 +26,17 @@ pattern = json.loads(argPattern)    # example: [{'dir':'f', 'steps': 1, 'mode':1
 
 rawDir = "img_raw"
 outDir = "img_corrected"
-#unDistorter = Undistorter(calFile='cal_data.p')
-unDistorter = Undistorter(calFile='camera_cal.p')
-stepperMotor = StepperMotor()
 LED = 14
 t_hold_stbl = 1.5   # Stepper motor rest time (s) when camera is capturing.
 t_hold_shot = 5
 capture_timeout = 25
 t_capture = Thread()
 condition = Condition()
+
+#unDistorter = Undistorter(calFile='cal_data.p')
+unDistorter = Undistorter(calFile='camera_cal.p')
+stepperMotor = StepperMotor()
+stacker = Stacker(nImages = len(pattern), imgDir = outDir, condition = condition)
 
 def led_init(pin):
     # Initializes GPIOs
@@ -63,9 +66,16 @@ def capture(rawDir, rawFile, outFile, condition):
     except:
         print ('Raw image to undistort not found')
 
+def post_process(stacker):
+    stacker.post_process()
+
 def start_capture_thread(rawDir, rawFile, outFile, condition):
     t_capture = Thread(target = capture, args = (rawDir, rawFile, outFile, condition))
     t_capture.start()
+
+def start_postprocess_thread(stacker):
+    t_pprocess = Thread(target = post_process, args = (stacker))
+    t_pprocess.start()
 
 def start_scanning():
     try:
@@ -73,6 +83,8 @@ def start_scanning():
         # Clearing the raw and result directory
         clear_dir(rawDir)
         clear_dir(outDir)
+        # Start the post-process thread
+        start_postprocess_thread(stacker)
         # Move from home position
         if stepperMotor.home():
             # Illumination on
@@ -111,9 +123,12 @@ def start_scanning():
         return False
 
 # Execute scanning and image processing
+t1 = time.time()
 if start_scanning():
-    if not (stack.post_process()):
-        print ('Failure during post_processing..')
+    t2 = time.time()
+    print (f'Total scan time {str(t2-t1)}s')
+    # if not (stack.post_process()):
+    #     print ('Failure during post_processing..')
 else:
     print ('Failure during scanning.')
 
