@@ -38,6 +38,8 @@ unDistorter = Undistorter(calFile='camera_cal.p')
 stepperMotor = StepperMotor()
 stacker = Stacker(nImages = len(pattern), imgDir = outDir, condition = condition)
 
+t_pprocess = None
+
 def led_init(pin):
     # Initializes GPIOs
     gpio.setwarnings(False)
@@ -75,6 +77,7 @@ def start_capture_thread(rawDir, rawFile, outFile, condition):
     t_capture.start()
 
 def start_postprocess_thread():
+    global t_pprocess
     t_pprocess = Thread(target = post_process)
     t_pprocess.start()
 
@@ -127,6 +130,10 @@ def start_scanning():
 t1 = time.time()
 if start_scanning():
     t2 = time.time()
+    try:
+        t_pprocess.join()
+    except Exception as e:
+        print (e)
     print (f'Total scan time {str(t2-t1)}s')
     # if not (stack.post_process()):
     #     print ('Failure during post_processing..')
