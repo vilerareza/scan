@@ -58,7 +58,7 @@ def clear_dir(dirName):
 
 def capture(rawDir, rawFile, outFile, condition):
     # Capture
-    subprocess.run(['libcamera-still', '--denoise', 'off', '--shutter', '70000', '--gain', '0', '--awb', 'cloudy', '--immediate', '--rawfull', '-e', 'png', '-o', f'{rawDir}/{rawFile}'])
+    subprocess.run(['libcamera-still', '--denoise', 'off', '--shutter', '70000', '--gain', '0', '--awb', 'cloudy', '--immediate', '--rawfull', '-e', 'png', '-o', f'{rawDir}/{rawFile}'], stdout=subprocess.DEVNULL)
     try:
         img = cv.imread(f'{rawDir}/{rawFile}')
         img_cor = unDistorter.undistort(img)
@@ -127,14 +127,14 @@ def start_scanning():
         return False
 
 # Execute scanning and image processing
-t1 = time.time()
+t1_scan = time.time()
 if start_scanning():
-    t2 = time.time()
+    t2_scan = time.time()
     try:
         t_pprocess.join()
     except Exception as e:
         print (e)
-    print (f'Total scan time {str(t2-t1)}s')
+    print (f'Total scan time {str(t2_scan-t1_scan)}s')
     # if not (stack.post_process()):
     #     print ('Failure during post_processing..')
 else:
