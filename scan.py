@@ -58,7 +58,7 @@ def clear_dir(dirName):
 
 def capture(rawDir, rawFile, outFile, condition):
     # Capture
-    subprocess.run(['libcamera-still', '--denoise', 'off', '--shutter', '70000', '--gain', '0', '--awb', 'cloudy', '--immediate', '--rawfull', '-e', 'png', '-o', f'{rawDir}/{rawFile}'], stdout=subprocess.DEVNULL)
+    subprocess.run(['libcamera-still', '--denoise', 'off', '--shutter', '70000', '--gain', '0', '--awb', 'cloudy', '--immediate', '--rawfull', '-e', 'png', '-o', f'{rawDir}/{rawFile}'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     try:
         img = cv.imread(f'{rawDir}/{rawFile}')
         img_cor = unDistorter.undistort(img)
