@@ -1,7 +1,7 @@
 from steppermotor import StepperMotor
 from undistorter import Undistorter
-# import stack
-from stack import Stacker
+import stack
+# from stack import Stacker
 import subprocess
 import cv2 as cv
 import argparse
@@ -14,29 +14,26 @@ import RPi.GPIO as gpio
 # Argument handler
 parser = argparse.ArgumentParser()
 parser.add_argument('pattern', type = str)
-parser.add_argument('filename', type = str)
 jsonDecoder = json.JSONDecoder()
 # Unpack
 args = parser.parse_args()
 argPattern = args.pattern.replace("\'", "\"")
 # Pattern
 pattern = json.loads(argPattern)    # example: [{'dir':'f', 'steps': 1, 'mode':1, 'delay':0.05}]
-# File Name
-#fileName = args.filename
 
 rawDir = "img_raw"
 outDir = "img_corrected"
 LED = 14
-t_hold_stbl = 1.5   # Stepper motor rest time (s) when camera is capturing.
-t_hold_shot = 5
-capture_timeout = 25
+t_hold_stbl = 2.7   # Stepper motor rest time (s) when camera is capturing.
+t_hold_shot = 2.5
+capture_timeout = 2.5
 t_capture = Thread()
 condition = Condition()
 
 #unDistorter = Undistorter(calFile='cal_data.p')
 unDistorter = Undistorter(calFile='camera_cal.p')
 stepperMotor = StepperMotor()
-stacker = Stacker(nImages = len(pattern), imgDir = outDir, condition = condition)
+# stacker = Stacker(nImages = len(pattern), imgDir = outDir, condition = condition)
 
 t_pprocess = None
 
@@ -76,10 +73,10 @@ def start_capture_thread(rawDir, rawFile, outFile, condition):
     t_capture = Thread(target = capture, args = (rawDir, rawFile, outFile, condition))
     t_capture.start()
 
-def start_postprocess_thread():
-    global t_pprocess
-    t_pprocess = Thread(target = post_process)
-    t_pprocess.start()
+# def start_postprocess_thread():
+#     global t_pprocess
+#     t_pprocess = Thread(target = post_process)
+#     t_pprocess.start()
 
 def start_scanning():
     try:
@@ -88,7 +85,7 @@ def start_scanning():
         clear_dir(rawDir)
         clear_dir(outDir)
         # Start the post-process thread
-        start_postprocess_thread()
+        # start_postprocess_thread()
         # Move from home position
         if stepperMotor.home():
             # Illumination on
@@ -127,16 +124,14 @@ def start_scanning():
         return False
 
 # Execute scanning and image processing
-t1_scan = time.time()
 if start_scanning():
-    t2_scan = time.time()
-    try:
-        t_pprocess.join()
-    except Exception as e:
-        print (e)
-    print (f'Total scan time {str(t2_scan-t1_scan)}s')
-    # if not (stack.post_process()):
-    #     print ('Failure during post_processing..')
+    # try:
+    #     t_pprocess.join()
+    # except Exception as e:
+    #     print (e)
+    # print (f'Total scan time {str(t2_scan-t1_scan)}s')
+    if not (stack.post_process()):
+        print ('Failure during post_processing..')
 else:
     print ('Failure during scanning.')
 
