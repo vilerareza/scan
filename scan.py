@@ -66,15 +66,16 @@ def capture(rawDir, rawFile, outFile, condition):
     except:
         print ('Raw image to undistort not found')
 
-def post_process(stacker):
+def post_process():
+    global stacker
     stacker.post_process()
 
 def start_capture_thread(rawDir, rawFile, outFile, condition):
     t_capture = Thread(target = capture, args = (rawDir, rawFile, outFile, condition))
     t_capture.start()
 
-def start_postprocess_thread(stacker):
-    t_pprocess = Thread(target = post_process, args = (stacker))
+def start_postprocess_thread():
+    t_pprocess = Thread(target = post_process)
     t_pprocess.start()
 
 def start_scanning():
@@ -84,7 +85,7 @@ def start_scanning():
         clear_dir(rawDir)
         clear_dir(outDir)
         # Start the post-process thread
-        start_postprocess_thread(stacker)
+        start_postprocess_thread()
         # Move from home position
         if stepperMotor.home():
             # Illumination on
