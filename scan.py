@@ -26,7 +26,7 @@ outDir = "img_corrected"
 LED = 14
 t_hold_stbl = 2.7   # Stepper motor rest time (s) when camera is capturing.
 t_hold_shot = 2.5
-capture_timeout = 2.5
+capture_timeout = 5
 t_capture = Thread()
 condition = Condition()
 
